@@ -39,6 +39,7 @@
          "requires" : {
             "Archive::Zip" : "1.30",
             "Cwd" : "3.33",
+            "Data::Dump" : "1.17",
             "Digest::SHA1" : "2.13",
             "Email::MIME::Creator" : "1.905",
             "Email::Sender::Simple" : "0.102370",
@@ -70,19 +71,19 @@
    "provides" : {
       "PGXN::API" : {
          "file" : "lib/PGXN/API.pm",
-         "version" : "v0.12.8"
+         "version" : "v0.12.9"
       },
       "PGXN::API::Indexer" : {
          "file" : "lib/PGXN/API/Indexer.pm",
-         "version" : "v0.12.8"
+         "version" : "v0.12.9"
       },
       "PGXN::API::Router" : {
          "file" : "lib/PGXN/API/Router.pm",
-         "version" : "v0.12.8"
+         "version" : "v0.12.9"
       },
       "PGXN::API::Sync" : {
          "file" : "lib/PGXN/API/Sync.pm",
-         "version" : "v0.12.8"
+         "version" : "v0.12.9"
       }
    },
    "release_status" : "stable",
@@ -98,5 +99,5 @@
          "url" : "http://github.com/theory/pgxn-api/tree/"
       }
    },
-   "version" : "v0.12.8"
+   "version" : "v0.12.9"
 }
