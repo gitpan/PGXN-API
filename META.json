@@ -71,19 +71,19 @@
    "provides" : {
       "PGXN::API" : {
          "file" : "lib/PGXN/API.pm",
-         "version" : "v0.12.9"
+         "version" : "v0.13.0"
       },
       "PGXN::API::Indexer" : {
          "file" : "lib/PGXN/API/Indexer.pm",
-         "version" : "v0.12.9"
+         "version" : "v0.13.0"
       },
       "PGXN::API::Router" : {
          "file" : "lib/PGXN/API/Router.pm",
-         "version" : "v0.12.9"
+         "version" : "v0.13.0"
       },
       "PGXN::API::Sync" : {
          "file" : "lib/PGXN/API/Sync.pm",
-         "version" : "v0.12.9"
+         "version" : "v0.13.0"
       }
    },
    "release_status" : "stable",
@@ -99,5 +99,5 @@
          "url" : "http://github.com/theory/pgxn-api/tree/"
       }
    },
-   "version" : "v0.12.9"
+   "version" : "v0.13.0"
 }

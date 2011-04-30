@@ -1,5 +1,10 @@
 Revision history for Perl extension PGXN::API
 
+0.13.0  2011-04-30T20:40:21
+      - The "name" and "user_name" fields are now full-text indexed in the
+        "docs", "dists", and "extensions" indexes. This will allow a search
+        such as `user:theory` to return results.
+
 0.12.9  2011-04-30T20:01:29
       - Fixed a test failure in `t/indexer.t` on case-sensitive file systems.
       - Removed use of `env perl` in the `t/bin/testrscync` script. Just use

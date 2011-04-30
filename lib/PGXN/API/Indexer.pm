@@ -1,4 +1,4 @@
-package PGXN::API::Indexer v0.12.9;
+package PGXN::API::Indexer v0.13.0;
 
 use 5.12.0;
 use utf8;
@@ -93,8 +93,8 @@ has schemas => ( is => 'ro', isa => 'HashRef', lazy => 1, default => sub {
             [ version     => $stored  ],
             [ docpath     => $stored  ],
             [ date        => $stored  ],
-            [ user        => $stored  ],
-            [ user_name   => $stored  ],
+            [ user        => $string  ],
+            [ user_name   => $fti     ],
         ]],
         [ dists => [
             [ key         => $indexed ],
@@ -105,8 +105,8 @@ has schemas => ( is => 'ro', isa => 'HashRef', lazy => 1, default => sub {
             [ tags        => $list    ],
             [ version     => $stored  ],
             [ date        => $stored  ],
-            [ user_name   => $stored  ],
-            [ user        => $stored  ],
+            [ user        => $string  ],
+            [ user_name   => $fti     ],
         ]],
         [ extensions => [
             [ key         => $indexed ],
@@ -116,8 +116,8 @@ has schemas => ( is => 'ro', isa => 'HashRef', lazy => 1, default => sub {
             [ dist        => $stored  ],
             [ version     => $stored  ],
             [ date        => $stored  ],
-            [ user_name   => $stored  ],
-            [ user        => $stored  ],
+            [ user        => $string  ],
+            [ user_name   => $fti     ],
         ]],
         [ users => [
             [ key         => $indexed ],
