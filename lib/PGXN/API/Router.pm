@@ -1,4 +1,4 @@
-package PGXN::API::Router v0.13.0;
+package PGXN::API::Router v0.14.0;
 
 use 5.12.0;
 use utf8;
@@ -216,7 +216,7 @@ An email address from which alert emails should be sent.
 
 =back
 
-See F<bin/pgxn_api.pgsgi> for an example usage.
+See L<pgxn_api_server> for an example usage.
 
 =head1 Author
 

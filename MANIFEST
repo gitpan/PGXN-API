@@ -1,5 +1,5 @@
-bin/pgxn_api.psgi
 bin/pgxn_api_sync
+bin/pgxn_api_server
 Build.PL
 Changes
 lib/PGXN/API.pm
