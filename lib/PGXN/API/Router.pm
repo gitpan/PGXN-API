@@ -12,7 +12,7 @@ use Plack::Request;
 use Encode;
 use File::Spec::Functions qw(catdir);
 use namespace::autoclean;
-our $VERSION = v0.14.1;
+our $VERSION = v0.15.0;
 
 sub app {
     my ($class, %params) = @_;
@@ -34,7 +34,7 @@ sub app {
         enable 'ErrorDocument', 500, '/error', subrequest => 1;
         enable 'HTTPExceptions';
         enable 'StackTrace', no_print_errors => 1;
-        enable 'JSONP', callback_key => 'jsonp';
+        enable 'JSONP', callback_key => 'callback';
         enable sub {
             my $app = shift;
             sub {
