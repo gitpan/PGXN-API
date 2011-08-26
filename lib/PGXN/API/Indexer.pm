@@ -12,12 +12,12 @@ use Text::Markup;
 use XML::LibXML;
 use List::Util qw(first);
 use List::MoreUtils qw(uniq);
-use KinoSearch::Plan::Schema;
-use KinoSearch::Analysis::PolyAnalyzer;
-use KinoSearch::Analysis::Tokenizer;
-use KinoSearch::Index::Indexer;
+use Lucy::Plan::Schema;
+use Lucy::Analysis::PolyAnalyzer;
+use Lucy::Analysis::RegexTokenizer;
+use Lucy::Index::Indexer;
 use namespace::autoclean;
-our $VERSION = v0.15.0;
+our $VERSION = v0.16.0;
 
 has verbose  => (is => 'rw', isa => 'Int', default => 0);
 has to_index => (is => 'ro', isa => 'HashRef', default => sub { +{
@@ -45,40 +45,40 @@ has index_dir => (is => 'ro', isa => 'Str', lazy => 1, default => sub {
 });
 
 has schemas => ( is => 'ro', isa => 'HashRef', lazy => 1, default => sub {
-    my $polyanalyzer = KinoSearch::Analysis::PolyAnalyzer->new(
+    my $polyanalyzer = Lucy::Analysis::PolyAnalyzer->new(
         language => 'en',
     );
 
-    my $fti = KinoSearch::Plan::FullTextType->new(
+    my $fti = Lucy::Plan::FullTextType->new(
         analyzer      => $polyanalyzer,
         highlightable => 0,
     );
 
-    my $ftih = KinoSearch::Plan::FullTextType->new(
+    my $ftih = Lucy::Plan::FullTextType->new(
         analyzer      => $polyanalyzer,
         highlightable => 1,
     );
 
-    my $string = KinoSearch::Plan::StringType->new(
+    my $string = Lucy::Plan::StringType->new(
         indexed => 1,
         stored  => 1,
     );
 
-    my $indexed = KinoSearch::Plan::StringType->new(
+    my $indexed = Lucy::Plan::StringType->new(
         indexed => 1,
         stored  => 0,
     );
 
-    my $stored = KinoSearch::Plan::StringType->new(
+    my $stored = Lucy::Plan::StringType->new(
         indexed => 0,
         stored  => 1,
     );
 
-    my $list = KinoSearch::Plan::FullTextType->new(
+    my $list = Lucy::Plan::FullTextType->new(
         indexed       => 1,
         stored        => 1,
         highlightable => 1,
-        analyzer      => KinoSearch::Analysis::Tokenizer->new(
+        analyzer      => Lucy::Analysis::RegexTokenizer->new(
             pattern => '[^\003]+'
         ),
     );
@@ -134,7 +134,7 @@ has schemas => ( is => 'ro', isa => 'HashRef', lazy => 1, default => sub {
         ]],
     ) {
         my ($name, $fields) = @{ $spec };
-        my $schema = KinoSearch::Plan::Schema->new;
+        my $schema = Lucy::Plan::Schema->new;
         $schema->spec_field(name => $_->[0], type => $_->[1] )
             for @{ $fields };
         $schemas{$name} = $schema;
@@ -144,7 +144,7 @@ has schemas => ( is => 'ro', isa => 'HashRef', lazy => 1, default => sub {
 
 sub indexer_for {
     my ($self, $iname) = @_;
-    KinoSearch::Index::Indexer->new(
+    Lucy::Index::Indexer->new(
         index  => catdir($self->index_dir, $iname),
         schema => $self->schemas->{$iname},
         create => 1,
@@ -388,7 +388,8 @@ sub update_extensions {
 
         # Copy the version info from the doc to the mirror and add the date.
         my $version   = $data->{version};
-        my $mir_dists = $mir_meta->{versions}{$version};
+        my $mir_vers  = $mir_meta->{versions};
+        my $mir_dists = $mir_vers->{$version};
         my $doc_dists = $doc_meta->{versions}{$version} ||= [];
 
         # Copy the doc root versions.
@@ -412,6 +413,12 @@ sub update_extensions {
                 # Got it. Add the release date.
                 $dist->{date} = $meta->{date};
             }
+        }
+
+        # Remove any deleted versions.
+        my $ddvers = $doc_meta->{versions};
+        for my $v (keys %{ $ddvers }) {
+            delete $ddvers->{$v} unless $mir_vers->{$v};
         }
 
         # Write it back out and index it.
@@ -469,6 +476,7 @@ sub parse_docs {
         next if $seen{$fn}++;
         my $src = catfile $dir, $fn;
         next unless -e $src;
+        say "    Parsing markup in $src" if $self->verbose > 1;
         my $doc = $self->_parse_html_string($markup->parse(file => $src));
 
         (my $noext = $fn) =~ s{[.][^.]+$}{};
@@ -649,9 +657,9 @@ sub _index_user {
     my $data = {
         key      => lc $user->{nickname},
         user     => $user->{nickname},
-        name     => $user->{name},
+        name     => $user->{name} || '',
         email    => $user->{email},
-        uri      => $user->{uri},
+        uri      => $user->{uri} || '',
     };
 
     # Gather up any other details.
@@ -1378,7 +1386,7 @@ what files to read from.
 
   my $ksi = $indexer->indexer_for($index_name);
 
-Returns a L<KinoSearch::Index::Indexer> object for updating named full text
+Returns a L<Lucy::Index::Indexer> object for updating named full text
 index. Used internally for updating the appropriate full text index when a
 distribution has been fully updated.
 
@@ -1418,9 +1426,9 @@ Returns the path to the parent directory of all of the full-text indexes.
 
   my $schema = $indexer->schemas->{$index_name};
 
-Returns a hash reference of L<KinoSearch::Plan::Schema> objects used to define
+Returns a hash reference of L<Lucy::Plan::Schema> objects used to define
 the structure of the full text indexes. The keys identify the indexes and the
-values are the corresponding L<KinoSearch::Plan::Schema> objects. The supported
+values are the corresponding L<Lucy::Plan::Schema> objects. The supported
 indexes are:
 
 =over

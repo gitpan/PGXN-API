@@ -4,7 +4,7 @@
       "David E. Wheeler <david.wheeler@pgexperts.com>"
    ],
    "dynamic_config" : 1,
-   "generated_by" : "Module::Build version 0.38, CPAN::Meta::Converter version 2.110930",
+   "generated_by" : "Module::Build version 0.38, CPAN::Meta::Converter version 2.110930001",
    "license" : [
       "open_source"
    ],
@@ -48,19 +48,19 @@
             "File::Spec" : "3.33",
             "JSON" : "2.27",
             "JSON::XS" : "2.3",
-            "KinoSearch" : "0.311",
             "List::MoreUtils" : "0.30",
             "List::Util" : "1.23",
+            "Lucy" : "v0.2.1",
             "Moose" : "1.15",
             "Moose::Util::TypeConstraints" : "1.15",
             "MooseX::Singleton" : "0.25",
-            "PGXN::API::Searcher" : "v0.9.0",
+            "PGXN::API::Searcher" : "v0.9.4",
             "Plack" : "0.9977",
             "Plack::App::Directory" : 0,
             "Plack::App::File" : 0,
             "Plack::Builder" : 0,
             "Plack::Middleware::JSONP" : 0,
-            "Text::Markup" : "0.12",
+            "Text::Markup" : "0.13",
             "URI::Template" : "0.15",
             "XML::LibXML" : "1.70",
             "namespace::autoclean" : "0.11",
@@ -71,19 +71,19 @@
    "provides" : {
       "PGXN::API" : {
          "file" : "lib/PGXN/API.pm",
-         "version" : "v0.15.0"
+         "version" : "v0.16.0"
       },
       "PGXN::API::Indexer" : {
          "file" : "lib/PGXN/API/Indexer.pm",
-         "version" : "v0.15.0"
+         "version" : "v0.16.0"
       },
       "PGXN::API::Router" : {
          "file" : "lib/PGXN/API/Router.pm",
-         "version" : "v0.15.0"
+         "version" : "v0.16.0"
       },
       "PGXN::API::Sync" : {
          "file" : "lib/PGXN/API/Sync.pm",
-         "version" : "v0.15.0"
+         "version" : "v0.16.0"
       }
    },
    "release_status" : "stable",
@@ -99,5 +99,5 @@
          "url" : "http://github.com/theory/pgxn-api/tree/"
       }
    },
-   "version" : "v0.15.0"
+   "version" : "v0.16.0"
 }

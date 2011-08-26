@@ -1,5 +1,5 @@
-bin/pgxn_api_sync
 bin/pgxn_api_server
+bin/pgxn_api_sync
 Build.PL
 Changes
 lib/PGXN/API.pm
@@ -8,8 +8,6 @@ lib/PGXN/API/Indexer.pm
 lib/PGXN/API/Router.pm
 lib/PGXN/API/Sync.pm
 MANIFEST			This list of files
-META.json
-META.yml
 README.md
 t/base.t
 t/bin/testrsync
@@ -19,6 +17,7 @@ t/data/ordered-tag-updated.json
 t/data/pair-ext-updated.json
 t/data/pair-ext-updated2.json
 t/data/pair-ext-updated3.json
+t/data/pair-ext-updated4.json
 t/data/pair-tag-updated.json
 t/data/pair-tag-updated2.json
 t/data/pair-updated.json
@@ -63,3 +62,5 @@ t/root/user/fred.json
 t/root/user/theory.json
 t/router.t
 t/sync.t
+META.yml
+META.json
