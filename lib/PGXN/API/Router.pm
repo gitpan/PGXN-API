@@ -12,7 +12,7 @@ use Plack::Request;
 use Encode;
 use File::Spec::Functions qw(catdir);
 use namespace::autoclean;
-our $VERSION = v0.16.0;
+our $VERSION = v0.16.1;
 
 sub app {
     my ($class, %params) = @_;
@@ -42,7 +42,7 @@ sub app {
                 Plack::Util::response_cb($res, sub {
                     my $res = shift;
                     push @{ $res->[1] },
-                        'X-PGXN-API-Version' => __PACKAGE__->VERSION;
+                        'X-PGXN-API-Version' => PGXN::API->version_string;
                 });
             };
         };

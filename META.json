@@ -4,7 +4,7 @@
       "David E. Wheeler <david.wheeler@pgexperts.com>"
    ],
    "dynamic_config" : 1,
-   "generated_by" : "Module::Build version 0.38, CPAN::Meta::Converter version 2.110930001",
+   "generated_by" : "Module::Build version 0.38, CPAN::Meta::Converter version 2.112621",
    "license" : [
       "open_source"
    ],
@@ -71,19 +71,19 @@
    "provides" : {
       "PGXN::API" : {
          "file" : "lib/PGXN/API.pm",
-         "version" : "v0.16.0"
+         "version" : "v0.16.1"
       },
       "PGXN::API::Indexer" : {
          "file" : "lib/PGXN/API/Indexer.pm",
-         "version" : "v0.16.0"
+         "version" : "v0.16.1"
       },
       "PGXN::API::Router" : {
          "file" : "lib/PGXN/API/Router.pm",
-         "version" : "v0.16.0"
+         "version" : "v0.16.1"
       },
       "PGXN::API::Sync" : {
          "file" : "lib/PGXN/API/Sync.pm",
-         "version" : "v0.16.0"
+         "version" : "v0.16.1"
       }
    },
    "release_status" : "stable",
@@ -99,5 +99,5 @@
          "url" : "http://github.com/theory/pgxn-api/tree/"
       }
    },
-   "version" : "v0.16.0"
+   "version" : "v0.16.1"
 }
