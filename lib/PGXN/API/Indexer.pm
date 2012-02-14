@@ -16,8 +16,10 @@ use Lucy::Plan::Schema;
 use Lucy::Analysis::PolyAnalyzer;
 use Lucy::Analysis::RegexTokenizer;
 use Lucy::Index::Indexer;
+use Try::Tiny;
+use Archive::Zip qw(AZ_OK);
 use namespace::autoclean;
-our $VERSION = v0.16.1;
+our $VERSION = v0.16.2;
 
 has verbose  => (is => 'rw', isa => 'Int', default => 0);
 has to_index => (is => 'ro', isa => 'HashRef', default => sub { +{
@@ -189,13 +191,14 @@ sub parse_from_mirror {
     $dst =~ s/[.][^.]+$/.html/;
 
     say "Parsing $src to $dst" if $self->verbose > 1;
-    make_path dirname $dst;
-
-    my $doc = $self->_parse_html_string($mark->parse(
+    my $html = $mark->parse(
         file   => $src,
         format => $format,
-    ));
+    ) or return $self;
 
+    my $doc = $self->_parse_html_string($html);
+
+    make_path dirname $dst;
     open my $fh, '>:utf8', $dst or die "Cannot open $dst: $!\n";
     $doc = _clean_html_body($doc->findnodes('/html/body'));
     print $fh $doc->toString, "\n";
@@ -446,8 +449,9 @@ sub find_docs {
     my $prefix = quotemeta lc "$meta->{name}-$meta->{version}";
     my $skip   = { directory => [], file => [], %{ $meta->{no_index} || {} } };
     my $markup = Text::Markup->new;
-    my @files  = grep { $_ && -e catfile $dir, $_ } map { $_->{docfile} }
-        values %{ $meta->{provides} };
+    my @files  = grep {
+        $_ && $markup->guess_format($_) && -e catfile $dir, $_
+    } map { $_->{docfile} } values %{ $meta->{provides} };
 
     for my $member ($p->{zip}->members) {
         next if $member->isDirectory;
@@ -477,7 +481,7 @@ sub parse_docs {
         my $src = catfile $dir, $fn;
         next unless -e $src;
         say "    Parsing markup in $src" if $self->verbose > 1;
-        my $doc = $self->_parse_html_string($markup->parse(file => $src));
+        my $doc = $self->_parse_html_string($markup->parse(file => $src) or next);
 
         (my $noext = $fn) =~ s{[.][^.]+$}{};
         # XXX Nasty hack until we get + operator in URI Template v4.
@@ -535,7 +539,6 @@ sub _parse_html_string {
         suppress_errors   => 1,
         recover           => 2,
     });
-
 }
 
 sub mirror_file_for {
@@ -743,7 +746,24 @@ sub _readme {
         qr{^$prefix/(?i:README(?:[.][^.]+)?)$}
     );
     return '' unless $member;
-    my $contents = $member->contents || '';
+
+    my $contents;
+    try {
+        local $SIG{__WARN__} = sub { die @_ };
+        $contents = $member->contents || '';
+    } catch {
+        die $_ unless /CRC or size mismatch/;
+        # Oy. Work around https://rt.cpan.org/Ticket/Display.html?id=74255.
+        my $zip_path = $zip->fileName;
+        warn "CRC or size mismatch error reading from $zip_path; reloading.\n";
+        $zip = Archive::Zip->new;
+        die "Error re-reading $zip_path\n" if $zip->read($zip_path) != AZ_OK;
+        ($member) = $zip->membersMatching(
+            qr{^$prefix/(?i:README(?:[.][^.]+)?)$}
+        );
+        $contents = $member->contents || '';
+    };
+
     utf8::decode $contents;
     # Normalize whitespace.
     $contents =~ s/^\s+//;

@@ -2,7 +2,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 243;
+use Test::More tests => 249;
 #use Test::More 'no_plan';
 use File::Copy::Recursive qw(dircopy fcopy);
 use File::Path qw(remove_tree);
@@ -120,6 +120,15 @@ ok $indexer->parse_from_mirror('meta/spec.txt', 'Multimarkdown'),
     'Parse spec.txt as MultiMarkdown';
 file_contents_like $htmlspec, qr{<h1 id="Name">Name</h1>},
     'And it should look like Multimarkdown-generated HTML';
+
+# Try it with an emptyish file.
+my $empty = catfile $api->mirror_root, 'empty.md';
+open my $fh, '>', $empty or die "Cannot open $empty: $!\n";
+print $fh "\n  \n";
+close $fh;
+my $empty_file = catfile $api->doc_root, 'empty.html';
+ok $indexer->parse_from_mirror('empty.md'), 'Parse empty.md';
+file_not_exists_ok $empty_file || unlink $empty_file;
 
 ##############################################################################
 # Let's index pair-0.1.0.
@@ -761,6 +770,18 @@ is_deeply $docs, {
 
 delete $meta->{no_index};
 
+# Try it with an emptyish file.
+$params->{zip}->addString('', 'pair-0.1.0/foo.pl');
+touch(catfile $indexer->doc_root_file_for(source => $params->{meta}), 'foo.pl');
+my $plhtml = catfile $doc_dir, 'foo.html';
+file_not_exists_ok $plhtml, 'dist/pair/pair-0.1.0/foo.html should not exist';
+$docs = $indexer->parse_docs($params);
+file_not_exists_ok $plhtml, 'dist/pair/pair-0.1.0/foo.html still should not exist';
+is_deeply $meta->{docs}, {
+    'README'   => { title => 'pair 0.1.0' },
+    'doc/pair' => { title => 'pair 0.1.0', abstract => 'A key/value pair data type' },
+}, 'Should array of docs excluding file with no docs';
+
 ##############################################################################
 # Make sure that add_document() calls all the necessary methods.
 my @called;
@@ -1038,36 +1059,39 @@ is_deeply \@called, [qw(update_user_lists _commit)],
 
 ##############################################################################
 # Test find_docs().
-$params->{meta}{provides}{pair}{docfile} = 'sql/pair.sql';
+$ENV{FOO} = 1;
+touch(catfile $indexer->doc_root_file_for(source => $params->{meta}), qw(sql hi.mkdn));
+$params->{meta}{provides}{pair}{docfile} = 'sql/hi.mkdn';
 is_deeply [ $indexer->find_docs($params)], [qw(
-    sql/pair.sql
+    sql/hi.mkdn
     doc/pair.md
     README.md
 )], 'find_docs() should find specified and random doc files';
+delete $ENV{FOO};
 
-$params->{meta}{no_index} = { file => ['sql/pair.sql'] };
+$params->{meta}{no_index} = { file => ['sql/hi.mkdn'] };
 is_deeply [ $indexer->find_docs($params)], [qw(
-    sql/pair.sql
+    sql/hi.mkdn
     doc/pair.md
     README.md
 )], 'find_docs() no_index should be ignored for specified doc file';
 
 $params->{meta}{no_index} = { file => ['doc/pair.md'] };
 is_deeply [ $indexer->find_docs($params)], [qw(
-    sql/pair.sql
+    sql/hi.mkdn
     README.md
 )], 'find_docs() should respect no_index for found docs';
 
 $params->{meta}{no_index} = { directory => ['sql'] };
 is_deeply [ $indexer->find_docs($params)], [qw(
-    sql/pair.sql
+    sql/hi.mkdn
     doc/pair.md
     README.md
-)], 'find_docs() shouldignore no_index directory for specified doc';
+)], 'find_docs() should ignore no_index directory for specified doc';
 
 $params->{meta}{no_index} = { directory => ['doc'] };
 is_deeply [ $indexer->find_docs($params)], [qw(
-    sql/pair.sql
+    sql/hi.mkdn
     README.md
 )], 'find_docs() should respect no_index directory for found docs';
 
@@ -1083,3 +1107,17 @@ is_deeply [ $indexer->find_docs($params)], [qw(
     doc/pair.md
     README.md
 )], 'find_docs() should not return dupes';
+
+$params->{meta}{provides}{pair}{docfile} = 'doc/pair.pdf';
+touch(catfile $indexer->doc_root_file_for(source => $params->{meta}), qw(doc pair.pdf));
+
+is_deeply [ $indexer->find_docs($params)], [qw(
+    doc/pair.md
+    README.md
+)], 'find_docs() should ignore doc files it does not know how to parse';
+
+sub touch {
+    my $fn = shift;
+    open my $fh, '>', $fn or die "Cannot open $fn: $!\n";
+    close $fh;
+}

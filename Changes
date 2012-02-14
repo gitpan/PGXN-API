@@ -1,5 +1,18 @@
 Revision history for Perl extension PGXN::API
 
+0.16.2  2012-02-14T06:46:47Z
+      - Empty Documentation files are no longer indexed or displayed.
+      - All files extracted from distribution zip files into the source
+        directory are now globally readable. This behavior eliminates
+        permissions errors when the user that serves the files is different
+        than the one that unzipped them.
+      - Files specified in the `docfile` key are now ignored if Text::Markup
+        does not recognize, since the cannot then be parsed for serving as
+        HTML.
+      - Worked around an [Archive::Zip
+        bug](https://rt.cpan.org/Ticket/Display.html?id=74255.) when reading
+        the README file for indexing.
+
 0.16.1  2012-01-10T04:30:02Z
       - Added `version_string` class method to PGXN::API. It should always be
         used for displaying the version.
