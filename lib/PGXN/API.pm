@@ -7,7 +7,7 @@ use File::Spec::Functions qw(catfile catdir);
 use URI::Template;
 use JSON;
 use namespace::autoclean;
-our $VERSION = v0.16.2;
+our $VERSION = v0.16.3;
 
 =head1 Name
 
@@ -253,11 +253,11 @@ __END__
 =head1 Support
 
 This module is stored in an open L<GitHub
-repository|http://github.com/theory/pgxn-api/>. Feel free to fork and
+repository|http://github.com/pgxn/pgxn-api/>. Feel free to fork and
 contribute!
 
 Please file bug reports via L<GitHub
-Issues|http://github.com/theory/pgxn-api/issues/> or by sending mail to
+Issues|http://github.com/pgxn/pgxn-api/issues/> or by sending mail to
 L<bug-PGXN-API@rt.cpan.org|mailto:bug-PGXN-API@rt.cpan.org>.
 
 =head1 See Also
@@ -308,7 +308,7 @@ David E. Wheeler <david.wheeler@pgexperts.com>
 
 =head1 Copyright and License
 
-Copyright (c) 2011 David E. Wheeler.
+Copyright (c) 2011-2013 David E. Wheeler.
 
 This module is free software; you can redistribute it and/or modify it under
 the L<PostgreSQL License|http://www.opensource.org/licenses/postgresql>.

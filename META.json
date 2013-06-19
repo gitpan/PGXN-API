@@ -4,7 +4,7 @@
       "David E. Wheeler <david.wheeler@pgexperts.com>"
    ],
    "dynamic_config" : 1,
-   "generated_by" : "Module::Build version 0.38, CPAN::Meta::Converter version 2.120351",
+   "generated_by" : "Module::Build version 0.4005, CPAN::Meta::Converter version 2.120921",
    "license" : [
       "open_source"
    ],
@@ -61,7 +61,7 @@
             "Plack::Builder" : "0",
             "Plack::Middleware::JSONP" : "0",
             "Text::Markup" : "0.15",
-            "URI::Template" : "0.15",
+            "URI::Template" : "0.16",
             "XML::LibXML" : "1.70",
             "namespace::autoclean" : "0.11",
             "perl" : "5.01"
@@ -71,33 +71,33 @@
    "provides" : {
       "PGXN::API" : {
          "file" : "lib/PGXN/API.pm",
-         "version" : "v0.16.2"
+         "version" : "v0.16.3"
       },
       "PGXN::API::Indexer" : {
          "file" : "lib/PGXN/API/Indexer.pm",
-         "version" : "v0.16.2"
+         "version" : "v0.16.3"
       },
       "PGXN::API::Router" : {
          "file" : "lib/PGXN/API/Router.pm",
-         "version" : "v0.16.2"
+         "version" : "v0.16.3"
       },
       "PGXN::API::Sync" : {
          "file" : "lib/PGXN/API/Sync.pm",
-         "version" : "v0.16.2"
+         "version" : "v0.16.3"
       }
    },
    "release_status" : "stable",
    "resources" : {
       "bugtracker" : {
-         "web" : "http://github.com/theory/pgxn-api/issues/"
+         "web" : "http://github.com/pgxn/pgxn-api/issues/"
       },
       "homepage" : "http://api.pgxn.org/",
       "license" : [
          "http://www.opensource.org/licenses/postgresql"
       ],
       "repository" : {
-         "url" : "http://github.com/theory/pgxn-api/tree/"
+         "url" : "http://github.com/pgxn/pgxn-api/tree/"
       }
    },
-   "version" : "v0.16.2"
+   "version" : "v0.16.3"
 }

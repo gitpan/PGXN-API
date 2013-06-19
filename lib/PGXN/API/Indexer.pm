@@ -19,7 +19,7 @@ use Lucy::Index::Indexer;
 use Try::Tiny;
 use Archive::Zip qw(AZ_OK);
 use namespace::autoclean;
-our $VERSION = v0.16.2;
+our $VERSION = v0.16.3;
 
 has verbose  => (is => 'rw', isa => 'Int', default => 0);
 has to_index => (is => 'ro', isa => 'HashRef', default => sub { +{
@@ -484,12 +484,9 @@ sub parse_docs {
         my $doc = $self->_parse_html_string($markup->parse(file => $src) or next);
 
         (my $noext = $fn) =~ s{[.][^.]+$}{};
-        # XXX Nasty hack until we get + operator in URI Template v4.
-        local $URI::Escape::escapes{'/'} = '/';
         my $dst  = $self->doc_root_file_for(
             htmldoc    => $meta,
             docpath    => $noext,
-            '+docpath' => $noext, # XXX Part of above-mentioned hack.
         );
         make_path dirname $dst;
 
@@ -957,7 +954,7 @@ sub _clean_html_body {
                         while ($header > $level) {
                             my $newul = XML::LibXML::Element->new('ul');
                             my $li = $ul->find('./li[last()]')->shift || do {
-                                XML::LibXML::Element->new('li');
+                                $ul->appendChild( XML::LibXML::Element->new('li') );
                             };
                             $li->appendText("\n    " . '  ' x (2 * $level));
                             $li->addChild($newul);
@@ -1471,7 +1468,7 @@ David E. Wheeler <david.wheeler@pgexperts.com>
 
 =head1 Copyright and License
 
-Copyright (c) 2011 David E. Wheeler.
+Copyright (c) 2011-2013 David E. Wheeler.
 
 This module is free software; you can redistribute it and/or modify it under
 the L<PostgreSQL License|http://www.opensource.org/licenses/postgresql>.

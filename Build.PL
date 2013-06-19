@@ -51,7 +51,7 @@ my $build = $class->new(
         'Plack::Middleware::JSONP'     => 0,
         'Plack::Builder'               => 0,
         'Text::Markup'                 => '0.15',
-        'URI::Template'                => '0.15',
+        'URI::Template'                => '0.16',
         'XML::LibXML'                  => '1.70',
     },
     recommends => {
@@ -61,8 +61,8 @@ my $build = $class->new(
     meta_merge => {
         resources => {
             homepage   => 'http://api.pgxn.org/',
-            bugtracker => 'http://github.com/theory/pgxn-api/issues/',
-            repository => 'http://github.com/theory/pgxn-api/tree/',
+            bugtracker => 'http://github.com/pgxn/pgxn-api/issues/',
+            repository => 'http://github.com/pgxn/pgxn-api/tree/',
         },
     },
 );

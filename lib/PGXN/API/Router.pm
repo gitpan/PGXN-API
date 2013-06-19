@@ -7,12 +7,13 @@ use Plack::Builder;
 use Plack::App::File;
 use Plack::App::Directory;
 use PGXN::API::Searcher;
+use List::MoreUtils qw(any);
 use JSON;
 use Plack::Request;
 use Encode;
 use File::Spec::Functions qw(catdir);
 use namespace::autoclean;
-our $VERSION = v0.16.2;
+our $VERSION = v0.16.3;
 
 sub app {
     my ($class, %params) = @_;
@@ -75,7 +76,7 @@ sub app {
                 400,
                 ['Content-Type' => 'text/plain', 'Content-Length' => 38],
                 ['Bad request: Invalid or missing "q" query param.']
-            ] if $q ~~ [undef, '', '*', '?'];
+            ] if !defined $q || any { $q eq $_ } '', '*', '?';
 
             # Make sure "o" and "l" params are valid.
             for my $param (qw(o l)) {
@@ -106,7 +107,7 @@ sub app {
         for my $ext (keys %{ $mimes }) {
             $mimes->{$ext} = 'text/plain'
                 if $mimes->{$ext} =~ /html|x-c|xml|calendar|vcard/
-                || $ext ~~ [qw(.bat .css .eml .js .json .mime .swf)];
+                || any { $ext eq $_ } qw(.bat .css .eml .js .json .mime .swf);
         }
         my $src_dir = Plack::App::Directory->new(
             root => catdir $root, 'src'
@@ -225,7 +226,7 @@ David E. Wheeler <david.wheeler@pgexperts.com>
 
 =head1 Copyright and License
 
-Copyright (c) 2011 David E. Wheeler.
+Copyright (c) 2011-2013 David E. Wheeler.
 
 This module is free software; you can redistribute it and/or modify it under
 the L<PostgreSQL License|http://www.opensource.org/licenses/postgresql>.
